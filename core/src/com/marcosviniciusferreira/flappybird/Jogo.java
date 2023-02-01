@@ -5,59 +5,37 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Jogo extends ApplicationAdapter {
 
+    //Texturas
     private SpriteBatch batch;
-    private List<Texture> passaros = new ArrayList<>();
+    private Texture[] passaros;
     private Texture fundo;
-    private float variacao = 0;
-    private float gravidade = 0;
-    private float posicaoInicialVertical = 0;
-
+    private Texture canoBaixo;
+    private Texture canoTopo;
 
     //Atributos de configurações
     private float larguraDispositivo;
     private float alturaDispositivo;
+    private float variacao = 0;
+    private float gravidade = 0;
+    private float posicaoInicialVerticalPassaro = 0;
+    private float posicaoCanoHorizontal;
+    private float espacoEntreCanos;
 
     @Override
     public void create() {
 
-        batch = new SpriteBatch();
         inicializarTexturas();
-        inicializarObjetos();
+        inicializaObjetos();
 
     }
 
     @Override
     public void render() {
 
-        batch.begin();
-        batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);
-
-        //Movimentos de bater asas
-        if (variacao > 3) variacao = 0;
-        batch.draw(passaros.get((int) variacao), 300, posicaoInicialVertical);
-        variacao += Gdx.graphics.getDeltaTime() * 10;
-
-
-        //Aplica evento de clique
-        boolean houveToqueTela = Gdx.input.justTouched();
-        if (houveToqueTela) {
-            gravidade = -20;
-        }
-
-        //Aplica gravidade no pássaro
-        if (posicaoInicialVertical > 0 || houveToqueTela) {
-            posicaoInicialVertical -= gravidade;
-        }
-
-
-        gravidade++;
-        batch.end();
-
+        verificarEstadoJogo();
+        desenharTexturas();
     }
 
     @Override
@@ -65,21 +43,62 @@ public class Jogo extends ApplicationAdapter {
 
     }
 
-    private void inicializarTexturas() {
 
-        fundo = new Texture("fundo.png");
+    private void verificarEstadoJogo() {
 
-        passaros.add(0, new Texture("passaro1.png"));
-        passaros.add(1, new Texture("passaro2.png"));
-        passaros.add(2, new Texture("passaro3.png"));
+        //Aplica evento de toque na tela
+        boolean toqueTela = Gdx.input.justTouched();
+        if (toqueTela) {
+            gravidade = -20;
+        }
+
+        //Aplica gravidade
+        if (posicaoInicialVerticalPassaro > 0 || toqueTela)
+            posicaoInicialVerticalPassaro = posicaoInicialVerticalPassaro - gravidade;
+
+        variacao += Gdx.graphics.getDeltaTime() * 10;
+        //Verifica variação para bater asas do pássaro
+        if (variacao > 3)
+            variacao = 0;
+
+        gravidade++;
 
     }
 
-    private void inicializarObjetos() {
+    private void desenharTexturas() {
+
+        batch.begin();
+
+        batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);
+        batch.draw(passaros[(int) variacao], 30, posicaoInicialVerticalPassaro);
+
+        batch.draw(canoBaixo, posicaoCanoHorizontal - 100, alturaDispositivo / 2 - canoBaixo.getHeight() - espacoEntreCanos / 2);
+        batch.draw(canoTopo, posicaoCanoHorizontal - 100, alturaDispositivo / 2 + espacoEntreCanos / 2);
+        batch.end();
+
+    }
+
+    private void inicializarTexturas() {
+        passaros = new Texture[3];
+        passaros[0] = new Texture("passaro1.png");
+        passaros[1] = new Texture("passaro2.png");
+        passaros[2] = new Texture("passaro3.png");
+
+        fundo = new Texture("fundo.png");
+        canoBaixo = new Texture("cano_baixo_maior.png");
+        canoTopo = new Texture("cano_topo_maior.png");
+
+    }
+
+    private void inicializaObjetos() {
+
+        batch = new SpriteBatch();
 
         larguraDispositivo = Gdx.graphics.getWidth();
         alturaDispositivo = Gdx.graphics.getHeight();
-        posicaoInicialVertical = alturaDispositivo / 2;
+        posicaoInicialVerticalPassaro = alturaDispositivo / 2;
+        posicaoCanoHorizontal = larguraDispositivo;
+        espacoEntreCanos = 300;
 
     }
 
