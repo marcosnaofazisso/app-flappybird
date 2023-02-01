@@ -11,12 +11,12 @@ import java.util.List;
 public class Jogo extends ApplicationAdapter {
 
     private SpriteBatch batch;
-    private Texture passaro;
-    //private Texture[] passaros = {};
     private List<Texture> passaros = new ArrayList<>();
-    private float variacao = 0;
-
     private Texture fundo;
+    private float variacao = 0;
+    private float gravidade = 0;
+    private float posicaoInicialVertical = 0;
+
 
     //Atributos de configurações
     private float larguraDispositivo;
@@ -26,20 +26,8 @@ public class Jogo extends ApplicationAdapter {
     public void create() {
 
         batch = new SpriteBatch();
-        passaro = new Texture("passaro1.png");
-        fundo = new Texture("fundo.png");
-
-//        passaros = new Texture[3];
-//        passaros[0] = new Texture("passaro1.png");
-//        passaros[1] = new Texture("passaro2.png");
-//        passaros[2] = new Texture("passaro3.png");
-
-        passaros.add(0, new Texture("passaro1.png"));
-        passaros.add(1, new Texture("passaro2.png"));
-        passaros.add(2, new Texture("passaro3.png"));
-
-        larguraDispositivo = Gdx.graphics.getWidth();
-        alturaDispositivo = Gdx.graphics.getHeight();
+        inicializarTexturas();
+        inicializarObjetos();
 
     }
 
@@ -49,10 +37,25 @@ public class Jogo extends ApplicationAdapter {
         batch.begin();
         batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);
 
+        //Movimentos de bater asas
         if (variacao > 3) variacao = 0;
-        batch.draw(passaros.get((int) variacao), 300, alturaDispositivo / 2);
+        batch.draw(passaros.get((int) variacao), 300, posicaoInicialVertical);
+        variacao += Gdx.graphics.getDeltaTime() * 10;
 
-        variacao += 0.1;
+
+        //Aplica evento de clique
+        boolean houveToqueTela = Gdx.input.justTouched();
+        if (houveToqueTela) {
+            gravidade = -20;
+        }
+
+        //Aplica gravidade no pássaro
+        if (posicaoInicialVertical > 0 || houveToqueTela) {
+            posicaoInicialVertical -= gravidade;
+        }
+
+
+        gravidade++;
         batch.end();
 
     }
@@ -61,4 +64,23 @@ public class Jogo extends ApplicationAdapter {
     public void dispose() {
 
     }
+
+    private void inicializarTexturas() {
+
+        fundo = new Texture("fundo.png");
+
+        passaros.add(0, new Texture("passaro1.png"));
+        passaros.add(1, new Texture("passaro2.png"));
+        passaros.add(2, new Texture("passaro3.png"));
+
+    }
+
+    private void inicializarObjetos() {
+
+        larguraDispositivo = Gdx.graphics.getWidth();
+        alturaDispositivo = Gdx.graphics.getHeight();
+        posicaoInicialVertical = alturaDispositivo / 2;
+
+    }
+
 }
