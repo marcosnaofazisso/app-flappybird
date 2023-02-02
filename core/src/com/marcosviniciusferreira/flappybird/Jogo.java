@@ -2,6 +2,7 @@ package com.marcosviniciusferreira.flappybird;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -50,7 +51,10 @@ public class Jogo extends ApplicationAdapter {
     private int pontos = 0;
 
     //Configuracao dos sons
-    
+    Sound somVoando;
+    Sound somColisao;
+    Sound somPontuacao;
+
 
     @Override
     public void create() {
@@ -86,7 +90,12 @@ public class Jogo extends ApplicationAdapter {
                 canoBaixo.getWidth(), canoBaixo.getHeight());
 
         if (Intersector.overlaps(circuloPassaro, retanguloCanoCima) || Intersector.overlaps(circuloPassaro, retanguloCanoBaixo)) {
-            estadoJogo = 2;
+
+            if (estadoJogo == 1) {
+                estadoJogo = 2;
+                somColisao.play();
+
+            }
 
         }
 
@@ -114,6 +123,7 @@ public class Jogo extends ApplicationAdapter {
             if (!passouCano) {
                 pontos++;
                 passouCano = true;
+                somPontuacao.play();
 
             }
         }
@@ -133,14 +143,17 @@ public class Jogo extends ApplicationAdapter {
 
             //Aplica evento de toque na tela
             if (toqueTela) {
-                gravidade = -20;
+                gravidade = -15;
                 estadoJogo = 1;
+                somVoando.play();
             }
 
         } else if (estadoJogo == 1) {
 
             if (toqueTela) {
-                gravidade = -20;
+                gravidade = -15;
+                somVoando.play();
+
             }
 
             //Movimentar cano
@@ -159,6 +172,10 @@ public class Jogo extends ApplicationAdapter {
             gravidade++;
 
         } else {
+
+            if (posicaoInicialVerticalPassaro > 0 || toqueTela)
+                posicaoInicialVerticalPassaro = posicaoInicialVerticalPassaro - gravidade;
+            gravidade++;
 
             if (toqueTela) {
                 estadoJogo = 0;
@@ -188,13 +205,13 @@ public class Jogo extends ApplicationAdapter {
         textoPontuacao.draw(batch, String.valueOf(pontos), larguraDispositivo / 2, alturaDispositivo - 100);
 
         if (estadoJogo == 0) {
-            textoColisao.draw(batch, "Toque na tela para inciar o jogo", larguraDispositivo / 2 - 300, alturaDispositivo / 2 + 150);
+            textoColisao.draw(batch, "Toque na tela para iniciar o jogo", larguraDispositivo / 2 - 300, alturaDispositivo / 2 + 150);
 
         }
 
         if (estadoJogo == 2) {
             batch.draw(gameOver, larguraDispositivo / 2 - gameOver.getWidth() / 2, alturaDispositivo / 2);
-            textoReiniciar.draw(batch, "Toque para reiniciar", larguraDispositivo / 2 - 140, alturaDispositivo / 2 - gameOver.getHeight() / 2);
+            textoReiniciar.draw(batch, "Toque para reiniciar", larguraDispositivo / 2 - 200, alturaDispositivo / 2 + 180);
             textoMelhorPontuacao.draw(batch, "Seu record : " + String.valueOf(pontos), larguraDispositivo / 2 - 140, alturaDispositivo / 2 - gameOver.getHeight());
 
         }
@@ -239,7 +256,7 @@ public class Jogo extends ApplicationAdapter {
         textoColisao.getData().setScale(3);
 
         textoReiniciar = new BitmapFont();
-        textoReiniciar.setColor(Color.GREEN);
+        textoReiniciar.setColor(Color.WHITE);
         textoReiniciar.getData().setScale(3);
 
         textoMelhorPontuacao = new BitmapFont();
@@ -251,6 +268,11 @@ public class Jogo extends ApplicationAdapter {
         circuloPassaro = new Circle();
         retanguloCanoCima = new Rectangle();
         retanguloCanoBaixo = new Rectangle();
+
+        //Inicializar sons
+        somVoando = Gdx.audio.newSound(Gdx.files.internal("som_asa.wav"));
+        somColisao = Gdx.audio.newSound(Gdx.files.internal("som_batida.wav"));
+        somPontuacao = Gdx.audio.newSound(Gdx.files.internal("som_pontos.wav"));
 
     }
 
