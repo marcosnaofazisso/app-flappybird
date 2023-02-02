@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,6 +14,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Random;
 
@@ -60,6 +64,12 @@ public class Jogo extends ApplicationAdapter {
     //Objeto salvar pontuacao
     Preferences preferences;
 
+    //Objetos para câmera
+    private OrthographicCamera camera;
+    private Viewport viewport;
+    private final float VIRTUAL_WIDTH = 720;
+    private final float VIRTUAL_HEIGHT = 1280;
+
 
     @Override
     public void create() {
@@ -71,6 +81,9 @@ public class Jogo extends ApplicationAdapter {
 
     @Override
     public void render() {
+
+        //Limpar frames anteriores
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         verificarEstadoJogo();
         validarPontos();
@@ -205,6 +218,8 @@ public class Jogo extends ApplicationAdapter {
 
     private void desenharTexturas() {
 
+        batch.setProjectionMatrix(camera.combined);
+
         batch.begin();
 
         batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);
@@ -216,14 +231,14 @@ public class Jogo extends ApplicationAdapter {
         textoPontuacao.draw(batch, String.valueOf(pontos), larguraDispositivo / 2, alturaDispositivo - 100);
 
         if (estadoJogo == 0) {
-            textoColisao.draw(batch, "Toque na tela para iniciar o jogo", larguraDispositivo / 2 - 300, alturaDispositivo / 2 + 150);
+            textoColisao.draw(batch, "Toque na tela para iniciar o jogo", larguraDispositivo / 2 - 180, alturaDispositivo / 2 + 80);
 
         }
 
         if (estadoJogo == 2) {
             batch.draw(gameOver, larguraDispositivo / 2 - gameOver.getWidth() / 2, alturaDispositivo / 2);
-            textoReiniciar.draw(batch, "Toque para reiniciar", larguraDispositivo / 2 - 200, alturaDispositivo / 2 + 180);
-            textoMelhorPontuacao.draw(batch, "Seu record : " + pontuacaoMaxima + " pontos", larguraDispositivo / 2 - 220, alturaDispositivo / 2 - gameOver.getHeight());
+            textoReiniciar.draw(batch, "Toque para reiniciar", larguraDispositivo / 2 - 150, alturaDispositivo / 2 + 180);
+            textoMelhorPontuacao.draw(batch, "Seu record : " + pontuacaoMaxima + " pontos", larguraDispositivo / 2 - 150, alturaDispositivo / 2 - gameOver.getHeight() + 20);
 
         }
         //textoColisao.draw(batch, "Game Over!", larguraDispositivo / 2, alturaDispositivo / 2);
@@ -251,8 +266,8 @@ public class Jogo extends ApplicationAdapter {
 
         batch = new SpriteBatch();
 
-        larguraDispositivo = Gdx.graphics.getWidth();
-        alturaDispositivo = Gdx.graphics.getHeight();
+        larguraDispositivo = VIRTUAL_WIDTH;
+        alturaDispositivo = VIRTUAL_HEIGHT;
         posicaoInicialVerticalPassaro = alturaDispositivo / 2;
         posicaoCanoHorizontal = larguraDispositivo;
         espacoEntreCanos = 400;
@@ -264,15 +279,15 @@ public class Jogo extends ApplicationAdapter {
 
         textoColisao = new BitmapFont();
         textoColisao.setColor(Color.WHITE);
-        textoColisao.getData().setScale(3);
+        textoColisao.getData().setScale(2);
 
         textoReiniciar = new BitmapFont();
         textoReiniciar.setColor(Color.WHITE);
-        textoReiniciar.getData().setScale(3);
+        textoReiniciar.getData().setScale(2);
 
         textoMelhorPontuacao = new BitmapFont();
         textoMelhorPontuacao.setColor(Color.ORANGE);
-        textoMelhorPontuacao.getData().setScale(3);
+        textoMelhorPontuacao.getData().setScale(2);
 
         //Configurar formas para colisões
         shapeRenderer = new ShapeRenderer();
@@ -289,6 +304,16 @@ public class Jogo extends ApplicationAdapter {
         preferences = Gdx.app.getPreferences("flappyBird");
         pontuacaoMaxima = preferences.getInteger("pontuacaoMaxima", 0);
 
+        //Configuracao da câmera
+        camera = new OrthographicCamera();
+        camera.position.set(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2, 0);
+        viewport = new StretchViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, camera);
+
     }
 
+    @Override
+    public void resize(int width, int height) {
+
+        viewport.update(width, height);
+    }
 }
