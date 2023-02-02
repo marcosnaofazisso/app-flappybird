@@ -49,6 +49,9 @@ public class Jogo extends ApplicationAdapter {
     BitmapFont textoMelhorPontuacao;
     private int pontos = 0;
 
+    //Configuracao dos sons
+    
+
     @Override
     public void create() {
 
@@ -157,6 +160,15 @@ public class Jogo extends ApplicationAdapter {
 
         } else {
 
+            if (toqueTela) {
+                estadoJogo = 0;
+                pontos = 0;
+                gravidade = 0;
+
+                posicaoInicialVerticalPassaro = alturaDispositivo / 2;
+                posicaoCanoHorizontal = larguraDispositivo;
+            }
+
 
         }
 
@@ -174,6 +186,12 @@ public class Jogo extends ApplicationAdapter {
         batch.draw(canoTopo, posicaoCanoHorizontal - 100, alturaDispositivo / 2 + espacoEntreCanos / 2 + posicaoCanoVertical);
 
         textoPontuacao.draw(batch, String.valueOf(pontos), larguraDispositivo / 2, alturaDispositivo - 100);
+
+        if (estadoJogo == 0) {
+            textoColisao.draw(batch, "Toque na tela para inciar o jogo", larguraDispositivo / 2 - 300, alturaDispositivo / 2 + 150);
+
+        }
+
         if (estadoJogo == 2) {
             batch.draw(gameOver, larguraDispositivo / 2 - gameOver.getWidth() / 2, alturaDispositivo / 2);
             textoReiniciar.draw(batch, "Toque para reiniciar", larguraDispositivo / 2 - 140, alturaDispositivo / 2 - gameOver.getHeight() / 2);
@@ -209,7 +227,7 @@ public class Jogo extends ApplicationAdapter {
         alturaDispositivo = Gdx.graphics.getHeight();
         posicaoInicialVerticalPassaro = alturaDispositivo / 2;
         posicaoCanoHorizontal = larguraDispositivo;
-        espacoEntreCanos = 300;
+        espacoEntreCanos = 400;
 
         //Configuracoes dos textos
         textoPontuacao = new BitmapFont();
@@ -218,7 +236,7 @@ public class Jogo extends ApplicationAdapter {
 
         textoColisao = new BitmapFont();
         textoColisao.setColor(Color.WHITE);
-        textoColisao.getData().setScale(8);
+        textoColisao.getData().setScale(3);
 
         textoReiniciar = new BitmapFont();
         textoReiniciar.setColor(Color.GREEN);
