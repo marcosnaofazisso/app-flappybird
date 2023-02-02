@@ -2,6 +2,7 @@ package com.marcosviniciusferreira.flappybird;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -49,11 +50,15 @@ public class Jogo extends ApplicationAdapter {
     BitmapFont textoReiniciar;
     BitmapFont textoMelhorPontuacao;
     private int pontos = 0;
+    private int pontuacaoMaxima = 0;
 
     //Configuracao dos sons
     Sound somVoando;
     Sound somColisao;
     Sound somPontuacao;
+
+    //Objeto salvar pontuacao
+    Preferences preferences;
 
 
     @Override
@@ -177,6 +182,12 @@ public class Jogo extends ApplicationAdapter {
                 posicaoInicialVerticalPassaro = posicaoInicialVerticalPassaro - gravidade;
             gravidade++;
 
+
+            if (pontos > pontuacaoMaxima) {
+                pontuacaoMaxima = pontos;
+                preferences.putInteger("pontuacaoMaxima", pontuacaoMaxima);
+            }
+
             if (toqueTela) {
                 estadoJogo = 0;
                 pontos = 0;
@@ -212,7 +223,7 @@ public class Jogo extends ApplicationAdapter {
         if (estadoJogo == 2) {
             batch.draw(gameOver, larguraDispositivo / 2 - gameOver.getWidth() / 2, alturaDispositivo / 2);
             textoReiniciar.draw(batch, "Toque para reiniciar", larguraDispositivo / 2 - 200, alturaDispositivo / 2 + 180);
-            textoMelhorPontuacao.draw(batch, "Seu record : " + String.valueOf(pontos), larguraDispositivo / 2 - 140, alturaDispositivo / 2 - gameOver.getHeight());
+            textoMelhorPontuacao.draw(batch, "Seu record : " + pontuacaoMaxima + " pontos", larguraDispositivo / 2 - 220, alturaDispositivo / 2 - gameOver.getHeight());
 
         }
         //textoColisao.draw(batch, "Game Over!", larguraDispositivo / 2, alturaDispositivo / 2);
@@ -273,6 +284,10 @@ public class Jogo extends ApplicationAdapter {
         somVoando = Gdx.audio.newSound(Gdx.files.internal("som_asa.wav"));
         somColisao = Gdx.audio.newSound(Gdx.files.internal("som_batida.wav"));
         somPontuacao = Gdx.audio.newSound(Gdx.files.internal("som_pontos.wav"));
+
+        //Configurar preferencias dos objetos
+        preferences = Gdx.app.getPreferences("flappyBird");
+        pontuacaoMaxima = preferences.getInteger("pontuacaoMaxima", 0);
 
     }
 
