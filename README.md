@@ -1,34 +1,28 @@
-# Project Name
+# Flappy Bird Clone
 
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text eve
+<img src="./demo/flappy-bird.jpg" height="600" width="1200">
 
+A basic Flappy Bird Clone project with LibGDX Library.
 ### Developers: 
 * [Marcos Vinicius Ferreira](https://github.com/marcosnaofazisso) 
 
 ## Goals and Rules:
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+The main goals of Flappy Bird Clone project on Android development was to understand the mechanics of developing a game with LibGDX Library, your functionalities, graphics, sprites and  methods. It was very fun!
 
 # Demo
-<img src="./demo/boromir.jpg" height="200" width="400">
 
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Images of some game mechanics like gravity, colision and moviments.
 
 # Tutorial
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+Recommended build tools and SDK versions:
 
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Android Studio IDE: Eletric Eel 
+Compile SDK Version 33
+Min SDK Version 14
+Target SDK Version 33
 
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
 
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-    code 
-    code  
-    code
+    Get JAR file from official LibGDX library website: https://libgdx.com
 
 
 ## Thank you!
