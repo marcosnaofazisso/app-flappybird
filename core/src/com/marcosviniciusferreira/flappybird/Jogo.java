@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
 
@@ -17,6 +21,12 @@ public class Jogo extends ApplicationAdapter {
     private Texture fundo;
     private Texture canoBaixo;
     private Texture canoTopo;
+
+    //Formas para colisão
+    private Circle circuloPassaro;
+    private Rectangle retanguloCanoCima;
+    private Rectangle retanguloCanoBaixo;
+    private ShapeRenderer shapeRenderer;
 
     //Atributos de configurações
     private float larguraDispositivo;
@@ -48,12 +58,46 @@ public class Jogo extends ApplicationAdapter {
         verificarEstadoJogo();
         validarPontos();
         desenharTexturas();
+        detectarColisoes();
     }
+
 
     @Override
     public void dispose() {
     }
 
+    private void detectarColisoes() {
+
+        circuloPassaro.set(50 + passaros[0].getWidth() / 2,
+                posicaoInicialVerticalPassaro + passaros[0].getHeight() / 2, passaros[0].getWidth() / 2);
+
+        retanguloCanoCima.set(posicaoCanoHorizontal - 100, alturaDispositivo / 2 + espacoEntreCanos / 2 + posicaoCanoVertical,
+                canoTopo.getWidth(), canoTopo.getHeight());
+
+        retanguloCanoBaixo.set(posicaoCanoHorizontal - 100, alturaDispositivo / 2 - canoBaixo.getHeight() - espacoEntreCanos / 2 + posicaoCanoVertical,
+                canoBaixo.getWidth(), canoBaixo.getHeight());
+
+        if (Intersector.overlaps(circuloPassaro, retanguloCanoCima) || Intersector.overlaps(circuloPassaro, retanguloCanoBaixo)) {
+            Gdx.app.log("Colidiu!", "sim............");
+        }
+
+
+        /*shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        //Forma pássaro
+        shapeRenderer.circle(50 + passaros[0].getWidth() / 2,
+                posicaoInicialVerticalPassaro + passaros[0].getHeight() / 2, passaros[0].getWidth() / 2);
+        shapeRenderer.setColor(Color.RED);
+
+        //Forma cano (topo)
+        shapeRenderer.rect(posicaoCanoHorizontal - 100, alturaDispositivo / 2 + espacoEntreCanos / 2 + posicaoCanoVertical,
+                canoTopo.getWidth(), canoTopo.getHeight());
+        //Forma cano (base)
+        shapeRenderer.rect(posicaoCanoHorizontal - 100, alturaDispositivo / 2 - canoBaixo.getHeight() - espacoEntreCanos / 2 + posicaoCanoVertical,
+                canoBaixo.getWidth(), canoBaixo.getHeight());
+
+        shapeRenderer.end();*/
+
+    }
 
     private void validarPontos() {
         //Passou da posição do pássaro
@@ -138,6 +182,12 @@ public class Jogo extends ApplicationAdapter {
         textoPontuacao = new BitmapFont();
         textoPontuacao.setColor(Color.WHITE);
         textoPontuacao.getData().setScale(8);
+
+        //Configurar formas para colisões
+        shapeRenderer = new ShapeRenderer();
+        circuloPassaro = new Circle();
+        retanguloCanoCima = new Rectangle();
+        retanguloCanoBaixo = new Rectangle();
 
     }
 
